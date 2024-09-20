@@ -1,4 +1,4 @@
-
+/*
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -31,4 +31,16 @@ void printAllKLength(char set[], int k, int n)
 {
 	printAllKLengthRec(set, "", n, k);
 }
+*/
 
+
+/*
+int main() {
+	char possibilities[] = { '0', '1' };
+	int k = 19;
+
+	printAllKLength(possibilities, k, 2);
+	ResultFile << combinations;
+	ResultFile.close();
+}
+*/
