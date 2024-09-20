@@ -1,120 +1,79 @@
 #include <iostream>
+#include <unordered_map>
 #include <string>
-#include <map>
-#include <vector>
 
 using namespace std;
 
-vector<string> combinations;
+int main() {
+    enum Team {
+        RCB, CSK, MI, GT, LSG, PBKS, SRH, KKR, DC, RR
+    };
 
-bool sortByValue(const pair<int, int>& a, const pair<int, int>& b)
-{
-	return a.second > b.second;
-}
+    unordered_map<Team, string> teamNames = {
+        {RCB, "RCB"}, {CSK, "CSK"}, {MI, "MI"}, {GT, "GT"}, {LSG, "LSG"},
+        {PBKS, "PBKS"}, {SRH, "SRH"}, {KKR, "KKR"}, {DC, "DC"}, {RR, "RR"}
+    };
 
-void printAllKLengthRec(char set[], string prefix, const int n, const int k)
-{
-	if (k == 0)
-	{
-		combinations.push_back(prefix);
-		return;
-	}
+    struct match {
+        Team t1;
+        Team t2;
+    };
 
-	for (int i = 0; i < n; i++)
-	{
-		string newPrefix = prefix + set[i];
-		printAllKLengthRec(set, newPrefix, n, k - 1);
-	}
-}
+    unordered_map<Team, int> teamScores = {
+        {RCB, 6}, {CSK, 10}, {MI, 6}, {GT, 8}, {LSG, 12},
+        {PBKS, 8}, {SRH, 12}, {KKR, 14}, {DC, 10}, {RR, 16}
+    };
 
-void printAllKLength(char set[], const int k, const int n)
-{
-	printAllKLengthRec(set, "", n, k);
-}
+    const match matches[19] = {
+        {RCB, GT}, {PBKS, CSK}, {LSG, KKR}, {MI, SRH}, {DC, RR},
+        {SRH, LSG}, {PBKS, RCB}, {GT, CSK}, {KKR, MI}, {CSK, RR},
+        {RCB, DC}, {GT, KKR}, {DC, LSG}, {RR, PBKS}, {SRH, GT},
+        {MI, LSG}, {RCB, CSK}, {SRH, PBKS}, {RR, KKR}
+    };
 
-int main()
-{
-	enum Team {
-		RCB,
-		CSK,
-		MI,
-		GT,
-		LSG,
-		PBKS,
-		SRH,
-		KKR,
-		DC,
-		RR
-	};
+    cout << "Matches Declared. Reading all possibilities...\n";
 
-	// Map enum to team names
-	map<Team, string> teamNames = {
-		{RCB, "RCB"}, {CSK, "CSK"}, {MI, "MI"}, {GT, "GT"}, {LSG, "LSG"},
-		{PBKS, "PBKS"}, {SRH, "SRH"}, {KKR, "KKR"}, {DC, "DC"}, {RR, "RR"}
-	};
+    int totalMatches = sizeof(matches) / sizeof(matches[0]);
+    long long totalCombinations = 1LL << totalMatches;  
 
-	struct match {
-		Team t1;
-		Team t2;
-	};
+    cout << "Total combinations: " << totalCombinations << '\n';
 
-	map<Team, int> teamScores = {
-		{RCB, 6}, {CSK, 10}, {MI, 6}, {GT, 8}, {LSG, 12},
-		{PBKS, 8}, {SRH, 12}, {KKR, 14}, {DC, 10}, {RR, 16}
-	};
+    for (long long bitmask = 0; bitmask < totalCombinations; ++bitmask) {
+        unordered_map<Team, int> currentScores = teamScores;
+        int rank = 1;
 
-	const match matches[19] = {
-		{RCB, GT}, {PBKS, CSK}, {LSG, KKR}, {MI, SRH}, {DC, RR},
-		{SRH, LSG}, {PBKS, RCB}, {GT, CSK}, {KKR, MI}, {CSK, RR},
-		{RCB, DC}, {GT, KKR}, {DC, LSG}, {RR, PBKS}, {SRH, GT},
-		{MI, LSG}, {RCB, CSK}, {SRH, PBKS}, {RR, KKR}
-	};
+        for (int i = 0; i < totalMatches; ++i) {
+            if (bitmask & (1LL << i)) 
+                currentScores[matches[i].t2] += 2;
+            else 
+                currentScores[matches[i].t1] += 2;
+            
+        }
 
-	cout << "Matches Declared. Reading all possibilities...\n";
+        for (const auto& score : currentScores) {
+            if (score.first != RCB && score.second > currentScores[RCB]) {
+                rank++;
+            }
+        }
 
-	char possibilities[] = { '0', '1' };
-	int k = sizeof(matches) / sizeof(matches[0]);
+        if (rank <= 2) {
+            cout << "\nRank: " << rank << " | Results: \n";
 
-	printAllKLength(possibilities, k, 2);
+            for (int i = 0; i < totalMatches; ++i) {
+                const Team t1 = matches[i].t1;
+                const Team t2 = matches[i].t2;
 
-	cout << "Possibilities initialized! Total combinations: " << combinations.size() << endl;
+                cout << teamNames[t1] << " v/s " << teamNames[t2] << " | Winner: ";
+                if (bitmask & (1LL << i)) {
+                    cout << teamNames[t2];
+                } else {
+                    cout << teamNames[t1];
+                }
+                cout << '\n';
+            }
+            cout << '\n';
+        }
+    }
 
-	for (const string& results : combinations) {
-		map<Team, int> currentScores = teamScores;
-
-		for (int i = 0; i < results.size(); i++) {
-			if (results[i] == '0') {
-				currentScores[matches[i].t1] += 2;
-			}
-			else {
-				currentScores[matches[i].t2] += 2;
-			}
-		}
-
-		int rank = 1;
-		for (const auto& score : currentScores) {
-			if (score.second > currentScores[RCB])
-				rank++;
-		}
-
-		if (rank <= 2) {
-			cout << results << " Rank: " << rank << '\n';
-			cout << "Results Required for RCB to attain position: " << rank << " in points table: " << '\n';
-
-			for (int i = 0; i < results.size(); i++) {
-				const Team t1 = static_cast<Team>(matches[i].t1);
-				const Team t2 = static_cast<Team>(matches[i].t2);
-
-				cout << teamNames[t1] << " v/s " << teamNames[t2] << " | Winner: ";
-				if (results[i] == '0') {
-					cout << teamNames[t1] << '\n';
-				}
-				else {
-					cout << teamNames[t2] << '\n';
-				}
-			}
-		}
-	}
-
-	return 0;
+    return 0;
 }
