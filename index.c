@@ -16,6 +16,27 @@ typedef struct {
 } Match;
 
 int main() {
+    printf("Welcome to IPL Analyzer\n\n");
+
+    printf("Enter the team name to predict chances (e.g., RCB, CSK, MI, etc.): ");
+    char input[5];
+    scanf("%s", input);
+
+    Team selectedTeam = -1;
+    for (int i = 0; i < TEAM_COUNT; i++) {
+        if (strcmp(input, teamNames[i]) == 0) {
+            selectedTeam = i;
+            break;
+        }
+    }
+
+    if (selectedTeam == -1) {
+        printf("Error: Invalid team name entered.\n");
+        return 1;
+    }
+
+    printf("Analyzing chances for team: %s\n", teamNames[selectedTeam]);
+
     int teamScores[TEAM_COUNT] = {
         6, 10, 6, 8, 12, 8, 12, 14, 10, 16
     };
@@ -48,7 +69,7 @@ int main() {
         }
 
         for (int i = 0; i < TEAM_COUNT; ++i) {
-            if (i != RCB && currentScores[i] > currentScores[RCB]) {
+            if (i != selectedTeam && currentScores[i] > currentScores[selectedTeam]) {
                 rank++;
             }
         }
@@ -72,6 +93,5 @@ int main() {
         }
     }
 
-    getchar();
     return 0;
 }
