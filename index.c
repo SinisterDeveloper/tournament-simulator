@@ -1,26 +1,21 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdint.h>
-
-typedef enum {
-    RCB, CSK, MI, GT, LSG, PBKS, SRH, KKR, DC, RR, TEAM_COUNT
-} Team;
-
-const char* teamNames[TEAM_COUNT] = {
-    "RCB", "CSK", "MI", "GT", "LSG", "PBKS", "SRH", "KKR", "DC", "RR"
-};
-
-typedef struct {
-    Team t1;
-    Team t2;
-} Match;
+#include "matches.h"
 
 int main() {
+    char input[5];
+    int desiredRank = 1, res = 0, i = 0;
+    FILE* fPtr;
     printf("Welcome to IPL Analyzer\n\n");
 
-    printf("Enter the team name to predict chances (e.g., RCB, CSK, MI, etc.): ");
-    char input[5];
-    scanf("%s", input);
+    Match matches[100];
+    int count = parseMatches(matches);
+
+    printf("%d matches declared.\n", count);
+
+    printf("Enter the team name to analyse chances:\n");
+    scanf_s("%s", input);
+
 
     Team selectedTeam = -1;
     for (int i = 0; i < TEAM_COUNT; i++) {
@@ -35,18 +30,28 @@ int main() {
         return 1;
     }
 
+    printf("Enter the desired rank:\n");
+    scanf_s("%d", &desiredRank);
+
+    printf("Enter maximum number of results to be shown:\n");
+    scanf_s("%d", &res);
+
     printf("Analyzing chances for team: %s\n", teamNames[selectedTeam]);
 
     int teamScores[TEAM_COUNT] = {
         6, 10, 6, 8, 12, 8, 12, 14, 10, 16
     };
 
+    /*
     Match matches[] = {
         {RCB, GT}, {PBKS, CSK}, {LSG, KKR}, {MI, SRH}, {DC, RR},
         {SRH, LSG}, {PBKS, RCB}, {GT, CSK}, {KKR, MI}, {CSK, RR},
         {RCB, DC}, {GT, KKR}, {DC, LSG}, {RR, PBKS}, {SRH, GT},
         {MI, LSG}, {RCB, CSK}, {SRH, PBKS}, {RR, KKR}
     };
+
+    */
+    
 
     printf("Matches Declared. Reading all possibilities...\n");
     int totalMatches = sizeof(matches) / sizeof(matches[0]);
@@ -55,6 +60,7 @@ int main() {
     printf("Total combinations: %lld\n", totalCombinations);
 
     for (long long bitmask = 0; bitmask < totalCombinations; ++bitmask) {
+        if (i >= res) break;
         int currentScores[TEAM_COUNT];
         memcpy(currentScores, teamScores, sizeof(teamScores));
         int rank = 1;
@@ -74,7 +80,7 @@ int main() {
             }
         }
 
-        if (rank <= 2) {
+        if (rank <= desiredRank) {
             printf("\nRank: %d | Results:\n", rank);
             for (int i = 0; i < totalMatches; ++i) {
                 const Team t1 = matches[i].t1;
@@ -90,8 +96,9 @@ int main() {
                 printf("\n");
             }
             printf("\n");
+            i++;
         }
     }
-
+    getchar();
     return 0;
 }
