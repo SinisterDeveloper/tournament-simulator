@@ -9,13 +9,12 @@ int main() {
     printf("Welcome to IPL Analyzer\n\n");
 
     Match matches[100];
-    int count = parseMatches(matches);
+    int totalMatches = parseMatches(matches);
 
-    printf("%d matches declared.\n", count);
+    printf("%d matches declared.\n", totalMatches);
 
     printf("Enter the team name to analyse chances:\n");
     scanf_s("%s", input);
-
 
     Team selectedTeam = -1;
     for (int i = 0; i < TEAM_COUNT; i++) {
@@ -41,20 +40,9 @@ int main() {
     int teamScores[TEAM_COUNT] = {
         6, 10, 6, 8, 12, 8, 12, 14, 10, 16
     };
-
-    /*
-    Match matches[] = {
-        {RCB, GT}, {PBKS, CSK}, {LSG, KKR}, {MI, SRH}, {DC, RR},
-        {SRH, LSG}, {PBKS, RCB}, {GT, CSK}, {KKR, MI}, {CSK, RR},
-        {RCB, DC}, {GT, KKR}, {DC, LSG}, {RR, PBKS}, {SRH, GT},
-        {MI, LSG}, {RCB, CSK}, {SRH, PBKS}, {RR, KKR}
-    };
-
-    */
     
 
     printf("Matches Declared. Reading all possibilities...\n");
-    int totalMatches = sizeof(matches) / sizeof(matches[0]);
     long long totalCombinations = 1LL << totalMatches;
 
     printf("Total combinations: %lld\n", totalCombinations);
@@ -99,6 +87,6 @@ int main() {
             i++;
         }
     }
-    getchar();
+    system("pause");
     return 0;
 }
