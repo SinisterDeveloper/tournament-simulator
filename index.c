@@ -13,6 +13,18 @@ int main() {
 
     printf("%d matches declared.\n", totalMatches);
 
+    int teamScores[MAX_TEAMS] = { 0 };
+
+    if (!parsePoints(teamScores)) {
+        printf("Failed to load points table. Exiting...\n");
+        return 1;
+    }
+
+    printf("Current Points Table:\n");
+    for (int i = 0; i < MAX_TEAMS; i++) {
+        printf("%s: %d points\n", teamNames[i], teamScores[i]);
+    }
+
     printf("Enter the team name to analyse chances:\n");
     scanf_s("%s", input);
 
@@ -37,11 +49,6 @@ int main() {
 
     printf("Analyzing chances for team: %s\n", teamNames[selectedTeam]);
 
-    int teamScores[TEAM_COUNT] = {
-        6, 10, 6, 8, 12, 8, 12, 14, 10, 16
-    };
-    
-
     printf("Matches Declared. Reading all possibilities...\n");
     long long totalCombinations = 1LL << totalMatches;
 
@@ -49,7 +56,7 @@ int main() {
 
     for (long long bitmask = 0; bitmask < totalCombinations; ++bitmask) {
         if (i >= res) break;
-        int currentScores[TEAM_COUNT];
+        int currentScores[20];
         memcpy(currentScores, teamScores, sizeof(teamScores));
         int rank = 1;
 
