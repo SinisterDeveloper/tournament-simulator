@@ -49,10 +49,10 @@ int main() {
 
     printf("Analyzing chances for team: %s\n", teamNames[selectedTeam]);
 
-    printf("Matches Declared. Reading all possibilities...\n");
+    printf("\n\nMatches Declared. Reading all possibilities...\n\n");
     long long totalCombinations = 1LL << totalMatches;
 
-    printf("Total combinations: %lld\n", totalCombinations);
+    printf("\nTotal combinations: %lld\n\n", totalCombinations);
 
     for (long long bitmask = 0; bitmask < totalCombinations; ++bitmask) {
         if (i >= res) break;
@@ -94,6 +94,9 @@ int main() {
             i++;
         }
     }
+    if (i == 0) 
+		printf("\nNo results possible for the desired rank :( \n");
+	
     system("pause");
     return 0;
 }
