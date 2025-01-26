@@ -6,12 +6,12 @@ int main() {
     char input[5];
     int desiredRank = 1, res = 0, i = 0;
     FILE* fPtr;
-    printf("Welcome to IPL Analyzer\n\n");
+    printf("--- Welcome to IPL Analyzer ---\n\n");
 
     Match matches[100];
     int totalMatches = parseMatches(matches);
 
-    printf("%d matches declared.\n", totalMatches);
+    printf("%d matches declared...\n", totalMatches);
 
     int teamScores[MAX_TEAMS] = { 0 };
 
@@ -21,11 +21,11 @@ int main() {
     }
 
     printf("Current Points Table:\n");
-    for (int i = 0; i < MAX_TEAMS; i++) {
+    for (int i = 0; i < 10; i++) {
         printf("%s: %d points\n", teamNames[i], teamScores[i]);
     }
 
-    printf("Enter the team name to analyse chances:\n");
+    printf("\n\nEnter the team name to analyse chances:\n");
     scanf_s("%s", input);
 
     Team selectedTeam = -1;

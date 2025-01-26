@@ -2,6 +2,7 @@
 #define MATCHES_H
 
 #include <stdio.h>
+#include<stdbool.h>
 
 #define MAX_TEAMS 20
 #define MAX_LINE_LENGTH 50
@@ -21,5 +22,7 @@ Team getTeamEnum(const char* name);
 extern const char* teamNames[TEAM_COUNT];
 
 int parseMatches(Match matches[100]);
+
+bool parsePoints(int teamScores[]);
 
 #endif // MATCHES_H
